@@ -730,6 +730,32 @@ function suite(moduleName) {
       stream.pipeline([globStream(globs, { cwd: dir }), concat(assert)], done);
     });
 
+     it('file path after negative glob', function (done) {
+      var expected = [{
+        cwd: cwd,
+        base: dir + '/fixtures/stuff',
+        path: dir + '/fixtures/stuff/run.dmc',
+      },{
+        cwd: cwd,
+        base: dir + '/fixtures',
+        path: dir + '/fixtures/test.coffee',
+      }];
+
+      var paths = [
+        dir + '/fixtures/stuff/*.dmc',
+        '!' + dir + '/fixtures/stuff/test.dmc',
+        dir + '/fixtures/test.coffee'
+      ];
+
+      function assert(pathObjs) {
+        expect(pathObjs.length).toEqual(2);
+        expect(pathObjs).toContainEqual(expected[0]);
+        expect(pathObjs).toContainEqual(expected[1]);
+      }
+
+      stream.pipeline([globStream(paths), concat(assert)], done);
+    });
+
     it('throws on invalid glob argument', function (done) {
       expect(globStream.bind(globStream, 42, { cwd: dir })).toThrow(
         /Invalid glob .* 0/
