@@ -704,7 +704,7 @@ function suite(moduleName) {
 
     it('does not error when a negative glob removes all matches from a positive glob', function (done) {
       var expected = {
-        cwd: cwd,
+        cwd: dir,
         base: dir + '/fixtures',
         path: dir + '/fixtures/test.coffee',
       };
@@ -716,7 +716,7 @@ function suite(moduleName) {
 
       stream.pipeline(
         [
-          globStream(['./fixtures/**/*.js', '!./**/test.js', '/fixtures/test.coffee'], { cwd: dir }),
+          globStream(['./fixtures/**/*.js', '!./**/test.js', './fixtures/test.coffee'], { cwd: dir }),
           concat(assert),
         ],
         done
@@ -725,7 +725,7 @@ function suite(moduleName) {
 
     it('workaround - does not error when a negative glob removes all matches from a positive glob', function (done) {
       var expected = {
-        cwd: cwd,
+        cwd: dir,
         base: dir + '/fixtures',
         path: dir + '/fixtures/test.coffee',
       };
@@ -737,7 +737,7 @@ function suite(moduleName) {
 
       stream.pipeline(
         [
-          globStream(['/fixtures/test.coffee', './fixtures/**/*.js', '!./**/test.js'], { cwd: dir }),
+          globStream(['./fixtures/test.coffee', './fixtures/**/*.js', '!./**/test.js'], { cwd: dir }),
           concat(assert),
         ],
         done
@@ -746,7 +746,7 @@ function suite(moduleName) {
 
     it('applies all negative globs to each positive glob', function (done) {
       var expected = [{
-        cwd: cwd,
+        cwd: dir,
         base: dir + '/fixtures',
         path: dir + '/fixtures/test.coffee',
       }];
@@ -755,7 +755,7 @@ function suite(moduleName) {
         './fixtures/stuff/*',
         '!./fixtures/stuff/*.dmc',
         './fixtures/stuff/*.dmc',
-        dir + '/fixtures/test.coffee'
+        './fixtures/test.coffee'
       ];
 
       function assert(pathObjs) {
@@ -768,13 +768,13 @@ function suite(moduleName) {
 
     it('workaround - applies all negative globs to each positive glob', function (done) {
       var expected = [{
-        cwd: cwd,
+        cwd: dir,
         base: dir + '/fixtures',
         path: dir + '/fixtures/test.coffee',
       }];
       
       var globs = [
-        dir + '/fixtures/test.coffee',
+        './fixtures/test.coffee',
         './fixtures/stuff/*',
         '!./fixtures/stuff/*.dmc',
         './fixtures/stuff/*.dmc'
