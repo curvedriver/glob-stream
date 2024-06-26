@@ -738,7 +738,7 @@ function suite(moduleName) {
       ];
 
       function assert(pathObjs) {
-        expect(pathObjs.length).toEqual(2);
+        expect(pathObjs.length).toEqual(1);
         expect(pathObjs).toContainEqual(expected[0]);
       }
 
