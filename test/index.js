@@ -723,6 +723,27 @@ function suite(moduleName) {
       );
     });
 
+    it('workaround - does not error when a negative glob removes all matches from a positive glob', function (done) {
+      var expected = {
+        cwd: cwd,
+        base: dir + '/fixtures',
+        path: dir + '/fixtures/test.coffee',
+      };
+
+      function assert(pathObjs) {
+        expect(pathObjs.length).toEqual(1);
+        expect(pathObjs[0]).toEqual(expected);
+      }
+
+      stream.pipeline(
+        [
+          globStream(['/fixtures/test.coffee', './fixtures/**/*.js', '!./**/test.js'], { cwd: dir }),
+          concat(assert),
+        ],
+        done
+      );
+    });
+
     it('applies all negative globs to each positive glob', function (done) {
       var expected = [{
         cwd: cwd,
@@ -735,6 +756,28 @@ function suite(moduleName) {
         '!./fixtures/stuff/*.dmc',
         './fixtures/stuff/*.dmc',
         dir + '/fixtures/test.coffee'
+      ];
+
+      function assert(pathObjs) {
+        expect(pathObjs.length).toEqual(1);
+        expect(pathObjs).toContainEqual(expected[0]);
+      }
+
+      stream.pipeline([globStream(globs, { cwd: dir }), concat(assert)], done);
+    });
+
+    it('workaround - applies all negative globs to each positive glob', function (done) {
+      var expected = [{
+        cwd: cwd,
+        base: dir + '/fixtures',
+        path: dir + '/fixtures/test.coffee',
+      }];
+      
+      var globs = [
+        dir + '/fixtures/test.coffee',
+        './fixtures/stuff/*',
+        '!./fixtures/stuff/*.dmc',
+        './fixtures/stuff/*.dmc'
       ];
 
       function assert(pathObjs) {
